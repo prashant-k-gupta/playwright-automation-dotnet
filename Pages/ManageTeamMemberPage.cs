@@ -1,15 +1,10 @@
-using System.Formats.Asn1;
 using Microsoft.Playwright;
 
-/*
-This file contains the ManageTeamMemberPage class, which is a page object representing the 
-Manage Team Member page of the application. It extends the BasePage class and includes 
-locators for elements such as input fields for first name, last name, email, and username, 
-as well as buttons for adding, editing, and deleting team members. The class provides methods 
-to perform actions on the page, including adding a new team member, searching for users, 
-editing user details, and deleting users.
-*/
-
+/// <summary>
+/// Represents the Manage Team Member page of the application. This class provides methods 
+/// to interact with elements on the page, including adding, searching, editing, and deleting 
+/// team members.
+/// </summary>
 public class ManageTeamMemberPage : BasePage
 {
     // Locator for the "Add Team Member" button
@@ -18,7 +13,7 @@ public class ManageTeamMemberPage : BasePage
     // Locator for the "Upload Photo" button
     public readonly ILocator uploadPhotoButton;
 
-    // Locators for input fields
+    // Locators for user input fields (First Name, Last Name, etc.)
     private readonly ILocator firstNameInput;
     private readonly ILocator lastnameInput;
     private readonly ILocator emailInput;
@@ -29,15 +24,22 @@ public class ManageTeamMemberPage : BasePage
     // Locator for the "Save and Close" button
     private readonly ILocator saveAndClosedButton;
 
-    // Locators for search functionality
+    // Locator for the search input field to search team members
     public readonly ILocator searchTeamMembersInput;
+
+    // Locator for the table data in the search results
     public readonly ILocator searchResultTableData;
 
-    // Locators for edit and delete actions
+    // Locators for the Edit and Delete buttons
     private readonly ILocator editButton;
     private readonly ILocator deleteButton;
 
-    // Constructor to initialize the ManageTeamMemberPage with the page instance and locators
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ManageTeamMemberPage"/> class with the specified 
+    /// Playwright page instance. This constructor also initializes locators for the elements on the page 
+    /// that interact with team members.
+    /// </summary>
+    /// <param name="page">The Playwright page instance.</param>
     public ManageTeamMemberPage(IPage page) : base(page)
     {
         addTeamButton = page.GetByRole(AriaRole.Button, new () { NameString = "Add Team Member" });
@@ -51,18 +53,25 @@ public class ManageTeamMemberPage : BasePage
         saveAndClosedButton = page.GetByRole(AriaRole.Button, new () { NameString = "  Save and Close" });
         searchTeamMembersInput = page.GetByRole(AriaRole.Textbox, new () { NameString = "Search team members" });
         searchResultTableData = page.Locator("td");
-        editButton = page.GetByRole(AriaRole.Link, new () { NameString = "Edit" });
+        editButton = page.GetByRole(AriaRole.Link, new () { NameString = "Edit" }).Nth(0);
         deleteButton = page.Locator("//button[contains(text(),'Delete')]");
     }
 
-    // Method to click on the "Add Team Member" button and wait for the page to finish loading
+    /// <summary>
+    /// Clicks on the "Add Team Member" button to open the form for adding a new team member.
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation of clicking the button.</returns>
     public async Task ClickOnAddTeamMember()
     {
         await addTeamButton.ClickAsync();
         await FinishedLoadingAsync();
     }
 
-    // Method to create a new user with random data and return the full name of the created user
+    /// <summary>
+    /// Creates a new user by filling in the required fields with randomly generated data 
+    /// and submitting the form.
+    /// </summary>
+    /// <returns>A string representing the full name of the created user.</returns>
     public async Task<string> CreateUser()
     {
         string fName = DataGenerator.GenerateRandomFirstName();
@@ -78,7 +87,11 @@ public class ManageTeamMemberPage : BasePage
         return lName + ", " + fName;
     }
 
-    // Method to search for a user by their full name
+    /// <summary>
+    /// Searches for a user by their full name in the search input field and submits the search.
+    /// </summary>
+    /// <param name="fullName">The full name of the user to search for.</param>
+    /// <returns>A task representing the asynchronous operation of searching for a user.</returns>
     public async Task SearchUser(string fullName)
     {
         await searchTeamMembersInput.FillAsync(fullName);
@@ -86,7 +99,11 @@ public class ManageTeamMemberPage : BasePage
         await FinishedLoadingAsync();
     }
 
-    // Method to edit a user's email and return the new email
+    /// <summary>
+    /// Edits the email address of an existing user by first clicking the edit button, 
+    /// filling in a new email, and saving the changes.
+    /// </summary>
+    /// <returns>A string representing the new email address of the user.</returns>
     public async Task<string> EditUserEmail()
     {
         await page.WaitForLoadStateAsync(LoadState.DOMContentLoaded);
@@ -98,7 +115,10 @@ public class ManageTeamMemberPage : BasePage
         return email;
     }
 
-    // Method to delete a user
+    /// <summary>
+    /// Deletes an existing user by first clicking the edit button and then clicking the delete button.
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation of deleting a user.</returns>
     public async Task DeleteUser()
     {
         await editButton.ClickAsync();

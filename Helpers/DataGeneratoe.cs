@@ -1,14 +1,12 @@
-
-/*
-This file contains the DataGenerator class, which provides methods for generating 
-random test data for use in automated tests. The class includes methods for generating 
-random first names, last names, email addresses, and usernames, helping to create 
-dynamic and unique test data for various scenarios.
-*/
-
+/// <summary>
+/// Utility class for generating random test data like names, emails, and usernames.
+/// </summary>
 public static class DataGenerator
 {
-    // Method to generate a random first name
+    /// <summary>
+    /// Generates a random first name.
+    /// </summary>
+    /// <returns>A randomly selected first name.</returns>
     public static string GenerateRandomFirstName()
     {
         var firstNames = new[] { "John", "Jane", "Alice", "Bob", "Charlie", "David", "Eve", "Grace" };
@@ -16,7 +14,10 @@ public static class DataGenerator
         return firstNames[random.Next(firstNames.Length)];
     }
 
-    // Method to generate a random last name
+    /// <summary>
+    /// Generates a random last name.
+    /// </summary>
+    /// <returns>A randomly selected last name.</returns>
     public static string GenerateRandomLastName()
     {
         var lastNames = new[] { "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Martinez" };
@@ -24,13 +25,19 @@ public static class DataGenerator
         return lastNames[random.Next(lastNames.Length)];
     }
 
-    // Method to generate a random email
+    /// <summary>
+    /// Generates a random email address.
+    /// </summary>
+    /// <returns>A randomly generated email address.</returns>
     public static string GenerateRandomEmail()
     {
         return $"user{Guid.NewGuid().ToString().Substring(0, 8)}@test.com";
     }
 
-    // Method to generate a random username
+    /// <summary>
+    /// Generates a random username.
+    /// </summary>
+    /// <returns>A randomly generated username.</returns>
     public static string GenerateRandomUsername()
     {
         return $"User{Guid.NewGuid().ToString().Substring(0, 8)}";

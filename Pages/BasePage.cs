@@ -1,44 +1,43 @@
 using Microsoft.Playwright;
 
-/*
-This file contains the BasePage class, which serves as a foundational class for page objects 
-in Playwright-based tests. The class includes methods for navigating to a URL, waiting for page 
-load, and ensuring that any loading indicators are finished before proceeding with the test steps. 
-It provides reusable functionality for common page interactions and waits, reducing redundancy in test code.
-*/
-
+/// <summary>
+/// Base class for page objects, providing methods for navigation and common actions.
+/// </summary>
 public abstract class BasePage
 {
-    // Page instance and loading element
     protected IPage page;
     protected IElementHandle loading;
 
-    // Constructor to initialize the BasePage with a Playwright page instance
+    /// <summary>
+    /// Initializes a new instance of the BasePage class.
+    /// </summary>
+    /// <param name="page">The Playwright page instance.</param>
     public BasePage(IPage page)
     {
         this.page = page;
     }
 
-    // Method to navigate to a specified URL and wait for the page to fully load
+    /// <summary>
+    /// Navigates to the specified URL and waits for the page to load.
+    /// </summary>
+    /// <param name="url">The URL to navigate to.</param>
     public async Task NavigateTo(string url)
     {
         await page.GotoAsync(url);
         await page.WaitForLoadStateAsync();
     }
 
-    // Common method to wait for the page to finish loading by detecting and handling the loading spinner
+    /// <summary>
+    /// Waits for the page to finish loading, including waiting for any loading elements to disappear.
+    /// </summary>
     public async Task FinishedLoadingAsync()
     {
-        // Wait for the element with selector ".ajax-loader" to appear on the page
-        var loading = await page.WaitForSelectorAsync(".ajax-loader");
-
-        if (loading != null)
+        try
         {
-            // Wait for the loading element to be hidden or detached
+            var loading = await page.WaitForSelectorAsync(".ajax-loader", new() { Timeout = 3000 });
             await loading.WaitForElementStateAsync(ElementState.Hidden);
         }
-
-        // Wait for the page to reach the load state and allow additional time for complete loading
+        catch { };
         await page.WaitForLoadStateAsync();
         await page.WaitForTimeoutAsync(5000);
     }

@@ -1,25 +1,22 @@
 using Microsoft.Playwright;
 
-/*
-This file contains the LoginPage class, which is a page object representing the Login page 
-of the application. It extends the BasePage class and includes locators for elements on 
-the Login page, such as the username field, password field, and login button. The class 
-also includes a method for performing the login action by filling in credentials and 
-submitting the form, ensuring that the page finishes loading after login.
-*/
-
+/// <summary>
+/// Represents the Login page of the application. This class provides methods to interact 
+/// with elements on the Login page, including entering credentials and submitting the login form.
+/// </summary>
 public class LoginPage : BasePage
 {
-    // Locator for the username field
+    
     private readonly ILocator usernameField;
-
-    // Locator for the password field
     private readonly ILocator passwordField;
-
-    // Locator for the login button
     private readonly ILocator loginButton;
 
-    // Constructor to initialize the LoginPage with the page instance and locators
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LoginPage"/> class with the specified 
+    /// Playwright page instance. This constructor also initializes locators for the username, 
+    /// password fields, and login button.
+    /// </summary>
+    /// <param name="page">The Playwright page instance.</param>
     public LoginPage(IPage page) : base(page)
     {
         usernameField = page.Locator("#signInName");
@@ -27,9 +24,14 @@ public class LoginPage : BasePage
         loginButton = page.Locator("#next");
     }
 
-    // Method to perform the login action using credentials from the configuration
+    /// <summary>
+    /// Performs the login action by filling in the username and password fields with the 
+    /// credentials fetched from the configuration and submitting the form.
+    /// </summary>
+    /// <returns>A task representing the asynchronous login operation.</returns>
     public async Task Login()
     {
+        // Wait for the page to load before interacting with elements
         await page.WaitForLoadStateAsync(LoadState.DOMContentLoaded);
 
         // Fetch login credentials from the configuration
@@ -37,14 +39,10 @@ public class LoginPage : BasePage
         string username = creds.Username;
         string password = creds.Password;
 
-        // Fill in the username and password fields
         await usernameField.FillAsync(username);
-        // Focus on the password field in case the password is filled incorrectly due to app slowness
-        await passwordField.FocusAsync();  
+        await passwordField.FocusAsync();
         await passwordField.FillAsync(password);
         await loginButton.ClickAsync();
-
-        // Wait for the page to finish loading after login
         await FinishedLoadingAsync();
     }
 }
